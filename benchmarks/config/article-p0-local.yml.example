@@ -1,0 +1,54 @@
+# P0 本地运行配置示例（article 最小可运行链路）
+# 目的：在不连课程 VM（192.168.200.130）的情况下启动 leadnews-article，
+#       仅用于验证详情 API + 缓存读路径。它覆盖 Nacos 上的配置来源，不代表真实部署配置。
+#
+# 用法（真实凭证放仓库外的本地文件，不要提交）：
+#   java -cp "<article target/classes;依赖 classpath>" com.heima.article.ArticleApplication \
+#     --spring.cloud.nacos.config.enabled=false \
+#     --spring.cloud.nacos.discovery.enabled=false \
+#     --spring.config.additional-location=file:D:/Code/Java/heima-leadnews/_optimization-artifacts/local-secrets/article-p0.yml
+#
+# 端口选择与课程默认不同，便于识别是本地实验实例：
+#   MySQL 13306 / Redis 16379（见 benchmarks/env/docker-compose.p0.yml）
+
+server:
+  port: 51802
+
+spring:
+  datasource:
+    driver-class-name: com.mysql.jdbc.Driver
+    url: jdbc:mysql://127.0.0.1:13306/leadnews?useUnicode=true&characterEncoding=utf8&useSSL=false&serverTimezone=Asia/Shanghai&zeroDateTimeBehavior=convertToNull
+    username: root
+    password: CHANGE_ME_LOCALLY
+  redis:
+    host: 127.0.0.1
+    port: 16379
+    database: 0
+    timeout: 2000ms
+  cloud:
+    nacos:
+      discovery:
+        enabled: false
+      config:
+        enabled: false
+  kafka:
+    # 本机没有 Kafka broker 时保留占位，观察启动是否受阻塞（P0 只记录事实）
+    bootstrap-servers: 127.0.0.1:9092
+
+kafka:
+  hosts: 127.0.0.1:9092
+
+xxl:
+  job:
+    admin:
+      addresses: http://127.0.0.1:8888/xxl-job-admin
+    executor:
+      appname: leadnews-hot-article-executor-p0
+      port: 19999
+
+minio:
+  endpoint: http://127.0.0.1:9000
+  access-key: p0-local-not-used
+  secret-key: p0-local-not-used
+  bucket: leadnews
+  read-path: http://127.0.0.1:9000/

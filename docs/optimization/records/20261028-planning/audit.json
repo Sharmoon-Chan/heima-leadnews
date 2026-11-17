@@ -1,0 +1,15 @@
+{
+  "audit_date": "2026-10-28",
+  "timezone": "Asia/Shanghai",
+  "type": "planning_static_audit_only",
+  "repository": "D:\\Code\\Java\\heima-leadnews\\heima-leadnews",
+  "head": "5a143ad588d6ab6f46a5291a52246d182479198a",
+  "preexisting_source_status_entries": 13,
+  "source_files_hashed": 13,
+  "code_modified_by_planning": false,
+  "service_started": false,
+  "compiled": false,
+  "benchmark_executed": false,
+  "recoverable_baseline": false,
+  "note": "Status and file hashes are a planning audit, not a recoverable V0 snapshot. P0 must capture dirty patches and untracked originals before changes."
+}

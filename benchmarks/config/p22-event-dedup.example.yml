@@ -1,0 +1,16 @@
+# Search-side current test environment; merge with existing endpoint/credential config.
+spring:
+  redis:
+    host: 127.0.0.1
+    port: 6379
+    database: 5
+    timeout: 500ms
+leadnews:
+  search:
+    dedup:
+      enabled: true
+      namespace: "leadnews:search:processed:"
+      ttl-seconds: 86400
+# Marker key additionally includes the destination ES index and business eventId.
+# Old raw messages bypass dedup. GET -> ES -> marker SET is not atomic.
+# Deploy consumers supporting schemaVersion=1 before enabling new producers.

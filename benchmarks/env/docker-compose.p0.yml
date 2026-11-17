@@ -1,0 +1,51 @@
+# P0 环境：article 详情链路所需的最小依赖（MySQL + Redis）
+# 用途：本地独立开发实例，端口和卷均与其它工程隔离，不触碰全局 Nacos/Docker 配置。
+# 真实密码不写在本文件：使用 --env-file 指向仓库外的本地受控文件，例如
+#   docker compose --env-file D:/Code/Java/heima-leadnews/_optimization-artifacts/local-secrets/p0.env \
+#     -f benchmarks/env/docker-compose.p0.yml -p leadnews-p0 up -d
+# 停止（保留数据卷）：... down
+# 删除测试数据（确认后执行）：... down -v
+services:
+  mysql-p0:
+    image: mysql:5.7.44
+    container_name: leadnews-p0-mysql
+    command:
+      - --character-set-server=utf8mb4
+      - --collation-server=utf8mb4_general_ci
+      - --max-connections=300
+      - --innodb-buffer-pool-size=512M
+    environment:
+      MYSQL_ROOT_PASSWORD: ${P0_MYSQL_ROOT_PASSWORD:?set in --env-file}
+      MYSQL_DATABASE: ${P0_MYSQL_DATABASE:-leadnews}
+      TZ: Asia/Shanghai
+    ports:
+      - "13306:3306"
+    volumes:
+      - p0-mysql-data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "127.0.0.1", "-p${P0_MYSQL_ROOT_PASSWORD}"]
+      interval: 10s
+      timeout: 5s
+      retries: 30
+    restart: "no"
+
+  redis-p0:
+    image: redis:7.2.5
+    container_name: leadnews-p0-redis
+    command: ["redis-server", "--appendonly", "no", "--maxmemory", "512mb", "--maxmemory-policy", "noeviction"]
+    ports:
+      - "16379:6379"
+    volumes:
+      - p0-redis-data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 30
+    restart: "no"
+
+volumes:
+  p0-mysql-data:
+    name: leadnews-p0-mysql-data
+  p0-redis-data:
+    name: leadnews-p0-redis-data

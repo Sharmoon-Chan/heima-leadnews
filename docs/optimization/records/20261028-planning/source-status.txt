@@ -1,0 +1,13 @@
+ M heima-leadnews-gateway/heima-leadnews-app-gateway/pom.xml
+ M heima-leadnews-gateway/heima-leadnews-app-gateway/src/main/java/com/heima/app/gateway/filter/AuthorizeFilter.java
+ M heima-leadnews-gateway/heima-leadnews-app-gateway/src/main/resources/bootstrap.yml
+ M heima-leadnews-service/heima-leadnews-article/src/main/java/com/heima/article/controller/v1/ArticleInfoController.java
+ M heima-leadnews-service/heima-leadnews-article/src/main/java/com/heima/article/service/ApArticleService.java
+ M heima-leadnews-service/heima-leadnews-article/src/main/java/com/heima/article/service/impl/ApArticleServiceImpl.java
+ M heima-leadnews-service/heima-leadnews-schedule/src/main/java/com/heima/schedule/service/impl/TaskServiceImpl.java
+ M heima-leadnews-service/heima-leadnews-search/src/main/java/com/heima/search/listener/SyncArticleListener.java
+ M heima-leadnews-service/heima-leadnews-user/src/main/java/com/heima/user/controller/v1/ApUserLoginController.java
+ M heima-leadnews-service/heima-leadnews-user/src/main/java/com/heima/user/service/ApUserService.java
+ M heima-leadnews-service/heima-leadnews-user/src/main/java/com/heima/user/service/impl/ApUserServiceImpl.java
+ M heima-leadnews-service/heima-leadnews-wemedia/src/main/java/com/heima/wemedia/service/impl/WmNewsTaskServiceImpl.java
+?? heima-leadnews-service/heima-leadnews-search/src/main/java/com/heima/search/config/KafkaErrorHandlerConfig.java

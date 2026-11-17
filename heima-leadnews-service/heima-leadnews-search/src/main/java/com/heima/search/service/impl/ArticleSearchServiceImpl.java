@@ -21,6 +21,7 @@ import org.elasticsearch.search.builder.SearchSourceBuilder;
 import org.elasticsearch.search.fetch.subphase.highlight.HighlightBuilder;
 import org.elasticsearch.search.sort.SortOrder;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
@@ -31,6 +32,9 @@ import java.util.Map;
 @Service
 @Slf4j
 public class ArticleSearchServiceImpl implements ArticleSearchService {
+
+    @Value("${leadnews.search.query.index:app_info_article}")
+    private String queryIndex = "app_info_article";
 
     @Autowired
     private RestHighLevelClient restHighLevelClient;
@@ -60,7 +64,7 @@ public class ArticleSearchServiceImpl implements ArticleSearchService {
         }
 
         //2.设置查询条件
-        SearchRequest searchRequest = new SearchRequest("app_info_article");
+        SearchRequest searchRequest = new SearchRequest(queryIndex);
         //条件构建器
         SearchSourceBuilder searchSourceBuilder = new SearchSourceBuilder();
 

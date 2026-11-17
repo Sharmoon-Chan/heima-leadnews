@@ -6,6 +6,8 @@ import org.springframework.dao.DataAccessException;
 import org.springframework.data.redis.connection.*;
 import org.springframework.data.redis.core.*;
 import org.springframework.data.redis.core.ZSetOperations.TypedTuple;
+import org.springframework.data.redis.core.script.DefaultRedisScript;
+import org.springframework.data.redis.core.script.RedisScript;
 import org.springframework.data.redis.core.types.Expiration;
 import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Component;
@@ -1418,8 +1420,32 @@ public class CacheService extends CachingConfigurerSupport {
         return results;
     }
 
-    public List<Object> refreshWithPipeline(String future_key,String topic_key,Collection<String> values){
+    /**
+     * P1.2 窄接口：仅当 key 的当前值等于期望值时才删除（Redis 原子 compare-and-delete）。
+     * 用于「只释放自己持有的锁」，避免先 GET 再 DEL 之间旧持有者删掉别人的锁。
+     * 未改变任何既有方法的行为。
+     *
+     * @return 1 表示删除成功；0 表示值不匹配或 key 不存在（此时什么都没删）
+     */
+    public Long releaseIfValueEquals(String key, String expectedValue) {
+        return stringRedisTemplate.execute(LOCK_RELEASE_SCRIPT,
+                Collections.singletonList(key), expectedValue);
+    }
 
+    /** Lua：值相等才删，比较与删除在 Redis 端一次完成 */
+    private static final RedisScript<Long> LOCK_RELEASE_SCRIPT = new DefaultRedisScript<>(
+            "if redis.call('get', KEYS[1]) == ARGV[1] then return redis.call('del', KEYS[1]) else return 0 end",
+            Long.class);
+
+    /**
+     * 管道技术：refreshWithPipeline
+     *
+     * @param future_key
+     * @param topic_key
+     * @param values
+     * @return
+     */
+    public List<Object> refreshWithPipeline(String future_key, String topic_key, Collection<String> values) {
         List<Object> objects = stringRedisTemplate.executePipelined(new RedisCallback<Object>() {
             @Nullable
             @Override

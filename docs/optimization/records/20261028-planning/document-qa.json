@@ -1,0 +1,10 @@
+{
+  "check": "planning_document_qa",
+  "date": "2026-10-28",
+  "markdown_files_checked": 12,
+  "local_links_checked": 19,
+  "broken_links": [],
+  "preexisting_source_files_checked": 13,
+  "preexisting_source_files_changed": [],
+  "result": "PASS"
+}

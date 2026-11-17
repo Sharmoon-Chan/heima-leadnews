@@ -1,0 +1,19 @@
+# Merge into the existing application environment; never replace DB/Redis/MinIO settings.
+spring:
+  kafka:
+    producer:
+      acks: all
+      retries: 10
+      properties:
+        enable.idempotence: true
+        max.in.flight.requests.per.connection: 5
+        max.block.ms: 5000
+        request.timeout.ms: 5000
+        delivery.timeout.ms: 15000
+leadnews:
+  search:
+    sync:
+      # Source topic, consumer group and index retain their application defaults.
+      dlt-timeout-ms: 20000
+      # Default destination is <source topic>.DLT with the SAME partition number.
+      # Provision at least as many DLT partitions as the source has before consuming.
